@@ -2,26 +2,29 @@
 
 import cv2 as cv
 import numpy as np
+import faceGestureRecognitionV2
 
 class FaceTracking:
+    face = None
     leftabove = None
     rightunder = None
 
-    def __init__(self,  i_leftabove, i_rightunder):
-        self.leftabove = i_leftabove
-        self.rightunder = i_rightunder
+    def __init__(self,  cap):
+        while self.face is None:
+            ret, frame = cap.read()
+            face = faceGestureRecognitionV2.getFaces(frame)
 
-    def CheckViolaJones(self, frame):
-        if not None:
-            leftabove = new
-            rightunder = new
-
+    def check_viola_jones(self, frame):
+        foundFace = faceGestureRecognitionV2.getFaces(frame)
+        if foundFace is not None:
+            self.face = foundFace
 
     def PerformFaceTracking(self, frame):
         self.CheckViolaJones(frame)
 
+        # https://docs.opencv.org/3.4/db/df8/tutorial_py_meanshift.html
+        
         # setup initial location of window
-        r, h, c, w = 250, 90, 400, 125  # simply hardcoded the values
         track_window = (c, r, w, h)
         # set up the ROI for tracking
         roi = frame[r:r + h, c:c + w]
