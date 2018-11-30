@@ -8,6 +8,7 @@ cap = cv.VideoCapture(sys.argv[1])
 # https://docs.opencv.org/3.4.3/d7/d8b/tutorial_py_face_detection.htmlq
 def getFaces(frame):
     # return array with faces
+
     # Our operations on the frame come here
     gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
 
@@ -25,7 +26,7 @@ def getFaces(frame):
         roi_color = frame[y:y + h, x:x + w]
         eyes = eye_cascade.detectMultiScale(roi_gray)
         if eyes is not None:
-            faceWithEyes.append+(Face(x, y, h, w))
+            faceWithEyes.append(Face(x, y, h, w))
 
         # for (ex, ey, ew, eh) in eyes:
             # cv.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
