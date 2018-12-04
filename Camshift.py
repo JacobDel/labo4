@@ -50,6 +50,6 @@ class FaceTracking:
         dst = cv.calcBackProject([hsv], [0], roi_hist, [0, 180], 1)
         # apply meanshift to get the new location
         ret, track_window = cv.CamShift(dst, track_window, term_crit)
-        self.face = Face(track_window[0], track_window[1], track_window[3], track_window[2])
+        self.face = Face(track_window[0], track_window[1], track_window[2], track_window[3])
         self.ret = ret
 
