@@ -1,7 +1,10 @@
 import cv2
 import numpy as np
 
-cam = cv2.VideoCapture(video_src)
+MHI_DURATION = 10
+DEFAULT_THRESHOLD = 32
+
+cam = cv2.VideoCapture(0)
 ret, frame = cam.read()
 h, w =frame.shape[:2]
 prev_frame = frame.copy()
@@ -17,7 +20,7 @@ while True:
     timestamp += 1
 
     # update motion history
-    cv2.updateMotionHistory(fgmask, motion_history, timestamp, MHI_DURATION)
+    cv2.motempl.updateMotionHistory(fgmask, motion_history, timestamp, MHI_DURATION)
 
     # normalize motion history
     mh = np.uint8(np.clip((motion_history-(timestamp-MHI_DURATION))/MHI_DURATION,0,1)*255)
