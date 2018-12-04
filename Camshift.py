@@ -11,6 +11,7 @@ class FaceTracking:
     leftabove = None
     rightunder = None
     cap = None
+    ret = None
 
     def __init__(self, i_cap):
         self.cap = i_cap
@@ -50,4 +51,5 @@ class FaceTracking:
         # apply meanshift to get the new location
         ret, track_window = cv.CamShift(dst, track_window, term_crit)
         self.face = Face(track_window[0], track_window[1], track_window[3], track_window[2])
+        self.ret = ret
 

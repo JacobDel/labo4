@@ -14,19 +14,34 @@ else:
 frameCount = 0
 faces = None
 facetracker = FaceTracking(vc)
-while rval:
-    # frameCount = (frameCount+1) % 15 # should only detect faces every x amount of frames
+cv2.destroyWindow("preview")
 
-    cv2.imshow('preview', frame)
+
+def perform_tests():
     ret, frame = vc.read()
     facetracker.PerformFaceTracking()
     # print(str(facetracker.face.startX) + ", " + str(facetracker.face.startY) + ", " + str(facetracker.face.width) + ", " + str(facetracker.face.height))
-    cv2.rectangle(frame,(facetracker.face.startX,facetracker.face.startY),(facetracker.face.startX+facetracker.face.width,facetracker.face.startY+facetracker.face.height),(255,0,0),2)
+
+
+    # cv2.rectangle(frame,(facetracker.face.startX,facetracker.face.startY),(facetracker.face.startX+facetracker.face.width,facetracker.face.startY+facetracker.face.height),(255,0,0),2)
     pts = cv2.boxPoints(facetracker.ret)
     pts = np.int0(pts)
     img2 = cv.polylines(frame, [pts], True, 255, 2)
+    cv2.imshow('preview', frame)
+
+
+while(1):
+    perform_tests()
+
+    # code for checking head tilt(leftor right)
+    print(str(facetracker.ret[2]))
+    # not finished yet
+    #
+    #
+    #
+    #
+
 
     key = cv2.waitKey(20)
     if key == 27: # exit on ESC
         break
-cv2.destroyWindow("preview")
