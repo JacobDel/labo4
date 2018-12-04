@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 
+#motion history images
+
 MHI_DURATION = 10
 DEFAULT_THRESHOLD = 32
 
