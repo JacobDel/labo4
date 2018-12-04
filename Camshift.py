@@ -5,6 +5,7 @@ import numpy as np
 import faceGestureRecognitionV2
 from faceObject import Face
 
+
 class FaceTracking:
     face = None
     leftabove = None
@@ -16,8 +17,11 @@ class FaceTracking:
         while self.face is None:
             ret, frame = i_cap.read()
             faces = faceGestureRecognitionV2.getFaces(frame)
+            cv.imshow('looking for face', frame)
+            cv.waitKey(1)
             if len(faces) > 0:
                 self.face = faces[0]
+                cv.destroyAllWindows()
 
     def check_viola_jones(self, frame):
         foundFaces = faceGestureRecognitionV2.getFaces(frame)
@@ -26,11 +30,10 @@ class FaceTracking:
 
     def PerformFaceTracking(self):
         ret, frame = self.cap.read()
-        self.CheckViolaJones(frame)
+        self.check_viola_jones(frame)
         # https://docs.opencv.org/3.4/db/df8/tutorial_py_meanshift.html
 
         # setup initial location of window
-        self.face.startX
         x, y, w, h = self.face.startX, self.face.startY, self.face.width, self.face.height
         track_window = (x, y, w, h)
         # set up the ROI for tracking
@@ -42,20 +45,9 @@ class FaceTracking:
         # Setup the termination criteria, either 10 iteration or move by atleast 1 pt
         term_crit = (cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 1)
 
-        while(1):
-            hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-            dst = cv.calcBackProject([hsv], [0], roi_hist, [0, 180], 1)
-            # apply meanshift to get the new location
-            ret, track_window = cv.CamShift(dst, track_window, term_crit)
-            # Draw it on image
-            # pts = cv.boxPoints(ret)
-            # pts = np.int0(pts)
-            # img2 = cv.polylines(frame, [pts], True, 255, 2)
-            # cv.imshow('img2', img2)
-            # k = cv.waitKey(60) & 0xff
-            # if k == 27:
-            #     break
-            # else:
-            #     cv.imwrite(chr(k) + ".jpg", img2)
-            self.face = Face(track_window)
+        hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+        dst = cv.calcBackProject([hsv], [0], roi_hist, [0, 180], 1)
+        # apply meanshift to get the new location
+        ret, track_window = cv.CamShift(dst, track_window, term_crit)
+        self.face = Face(track_window[0], track_window[1], track_window[3], track_window[2])
 
