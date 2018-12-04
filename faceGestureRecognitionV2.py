@@ -3,6 +3,12 @@ import cv2 as cv
 import sys
 from faceObject import Face
 
+#based on viola jones
+
+#pre load xml files:
+face_cascade = cv.CascadeClassifier('haarcascades/haarcascade_frontalface_default.xml')
+eye_cascade = cv.CascadeClassifier('haarcascades/haarcascade_eye.xml')
+
 # https://docs.opencv.org/3.4.3/d7/d8b/tutorial_py_face_detection.htmlq
 def getFaces(frame):
     # return array with faces
@@ -25,8 +31,7 @@ def getFaces(frame):
     cv.imshow('frame', gray)
 
     # Haar-cascade Detection in OpenCV
-    face_cascade = cv.CascadeClassifier('haarcascades/haarcascade_frontalface_default.xml')
-    eye_cascade = cv.CascadeClassifier('haarcascades/haarcascade_eye.xml')
+
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
     faceWithEyes = []
     for (x, y, w, h) in faces:

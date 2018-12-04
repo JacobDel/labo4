@@ -6,7 +6,6 @@ from faceObject import Face
 cap = cv.VideoCapture(sys.argv[1])
 
 # https://docs.opencv.org/3.4.3/d7/d8b/tutorial_py_face_detection.htmlq
-
 def getFaces(frame):
     # return array with faces
 
@@ -32,14 +31,12 @@ def getFaces(frame):
         # for (ex, ey, ew, eh) in eyes:
             # cv.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
     return faceWithEyes
-
 while(True):
     # Capture frame-by-frame
     ret, frame = cap.read()
     faces = getFaces(frame)
     for face in faces:
         cv.rectangle(frame,(face.startX,face.startY),(face.startX+face.width,face.startY+face.height),(255,0,0),2)
-
 
     cv.imshow('img', frame)
     if cv.waitKey(1) & 0xFF == ord('q'):
