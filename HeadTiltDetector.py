@@ -5,8 +5,8 @@ class TiltDetector:
     cornerkeeper = None
 
     def __init__(self):
-        self.cornerkeeper = [30]
-        for i in range(0, 30):
+        self.cornerkeeper = [40]
+        for i in range(0, 40):
             self.cornerkeeper.append(0)
 
     def update(self, corner):
