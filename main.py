@@ -69,6 +69,8 @@ def perform_checks():
     if not active:
         image_controller.reset()
     image_controller.show()
+    horizontal, vertical = noddetector.get_values()
+    print(horizontal + "   " + vertical)
 """
 the big while loop that runs continuesly
 """

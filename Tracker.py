@@ -70,7 +70,14 @@ class FaceTracking:
         self.foundhead = False
         if len(foundFaces) != 0:
             face = foundFaces[0]
-            if face.leftEyeX is not None:
+            if face.startX is not None:
+                self.foundhead = True
+                self.face.setHead(face.startX, face.startY, face.width, face.height)
+                self.rethead = (
+                (face.startX + face.width / 2, face.startY + face.height / 2), (face.width, face.height), 0)
+                self.cam_head.roi_setup(frame, face.startX, face.startY, face.width, face.height)
+
+            if face.leftEyeX is not None and face.startX is not None:
                 self.face.setEyes(face.leftEyeX, face.leftEyeY, face.rightEyeX, face.rightEyeY, face.eyeWidth, face.eyeHeight)
                 self.foundeyes = True
 
@@ -82,11 +89,11 @@ class FaceTracking:
                                    (face.eyeWidth, face.eyeHeight), 0)
                 self.face.setEyes(face.leftEyeX, face.leftEyeY, face.rightEyeX, face.rightEyeY, face.eyeWidth, face.eyeHeight)
 
-            if face.startX is not None:
-                self.foundhead = True
-                self.face.setHead(face.startX, face.startY, face.width, face.height)
-                self.rethead = ((face.startX + face.width/2, face.startY + face.height/2), (face.width, face.height), 0)
-                self.cam_head.roi_setup(frame, face.startX, face.startY, face.width, face.height)
+            # if face.startX is not None:
+            #     self.foundhead = True
+            #     self.face.setHead(face.startX, face.startY, face.width, face.height)
+            #     self.rethead = ((face.startX + face.width/2, face.startY + face.height/2), (face.width, face.height), 0)
+            #     self.cam_head.roi_setup(frame, face.startX, face.startY, face.width, face.height)
 
     # def CamshiftTracking(self, frame, x, y, w, h):
         # # setup initial location of window
@@ -132,6 +139,10 @@ class FaceTracking:
     def PerformFaceTracking(self):
         ret, frame = self.cap.read()
         self.check_viola_jones(frame)
+        # self.foundeyes = False
+        # self.foundhead = False
+
+
         # https://docs.opencv.org/3.4/db/df8/tutorial_py_meanshift.html
         if not self.foundhead:
             ret, track_window = self.CamshiftTracking(self.cam_head, frame)
@@ -148,8 +159,8 @@ class FaceTracking:
             self.retrighteye = ret
 
             self.face.setEyes(track_window_left[0], track_window_left[1], track_window_right[0], track_window_right[1],
-                              self.face.eyeWidth,
-                              self.face.eyeHeight)
+                              track_window_right[2],
+                              track_window_right[3])
 
 
 
