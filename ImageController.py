@@ -17,3 +17,13 @@ class image_controller:
 
     def show(self):
         cv2.imshow('control this image!', self.image)
+
+    def resize_horizontal(self):
+        height = self.image.shape[0]
+        width = round(self.image.shape[1] * 0.95)
+        self.image = cv2.resize(self.image, (width, height))
+
+    def resize_vertical(self):
+        height = self.image.shape[1]
+        width = round(self.image.shape[0] * 0.95)
+        self.image = cv2.resize(self.image, (width, height))
