@@ -21,7 +21,9 @@ tiltdetector = TiltDetector()
 # any image can be passed along to be displayed
 image_controller = image_controller(vc.read()[1])
 
-
+"""
+does stuff like tracking face, tracking eyes and such
+"""
 def perform_tests():
     ret, frame = vc.read()
     facetracker.PerformFaceTracking()
@@ -37,7 +39,11 @@ def perform_tests():
     cv2.imshow('preview', frame)
 
 
+"""
+makes checks on the measured data
+"""
 def perform_checks():
+    # 
     if tiltdetector.RightTilt():
         image_controller.rotate(1)
     elif tiltdetector.LeftTilt():
@@ -45,6 +51,10 @@ def perform_checks():
     else:
         image_controller.reset()
 
+
+"""
+the big while loop that runs continuesly
+"""
 while True:
     perform_tests()
     # code for checking head tilt(leftor right)
