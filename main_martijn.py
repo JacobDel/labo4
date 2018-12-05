@@ -1,7 +1,7 @@
 import cv2
 import cv2 as cv
 import numpy as np
-from Camshift import FaceTracking
+from Tracker import FaceTracking
 
 cv2.namedWindow("preview")
 vc = cv2.VideoCapture(0)

@@ -1,6 +1,6 @@
 import cv2
 from faceGestureRecognitionV2 import getFaces
-from Camshift import FaceTracking
+from Tracker import FaceTracking
 import MHIv2
 
 

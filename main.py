@@ -2,7 +2,7 @@ import cv2
 import cv2 as cv
 import numpy as np
 from HeadTiltDetector import TiltDetector
-from Camshift import FaceTracking
+from Tracker import FaceTracking
 from ImageController import image_controller
 
 cv2.namedWindow("preview")
