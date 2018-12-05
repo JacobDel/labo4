@@ -49,8 +49,8 @@ def getFaces(frame):
             person[0].rightEyeY = int((eyes[1][1]+y)*yRatio)
             person[0].leftEyeX = int((eyes[0][0]+x)*xRatio)
             person[0].leftEyeY = int((eyes[0][1]+y)*yRatio)
-            person[0].leftEyeWidth = int(eyes[0][2]*xRatio)
-            person[0].leftEyeHeight = int(eyes[0][3]*yRatio)
+            person[0].eyeWidth = int(eyes[0][2]*xRatio)
+            person[0].eyeHeight = int(eyes[0][3]*yRatio)
         if len(smiles)>0:
             person[0].smileX = int((smiles[0][0]+x)*xRatio)
             person[0].smileY = int((smiles[0][1]+y)*yRatio)
