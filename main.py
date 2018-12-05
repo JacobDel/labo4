@@ -26,10 +26,14 @@ def perform_tests():
     ret, frame = vc.read()
     facetracker.PerformFaceTracking()
     # print(str(facetracker.face.startX) + ", " + str(facetracker.face.startY) + ", " + str(facetracker.face.width) + ", " + str(facetracker.face.height))
-    cv2.rectangle(frame,(facetracker.face.startX,facetracker.face.startY),(facetracker.face.startX+facetracker.face.width,facetracker.face.startY+facetracker.face.height),(255,0,0),2)
-    pts = cv2.boxPoints(facetracker.ret)
+    # cv2.rectangle(frame,(facetracker.face.startX,facetracker.face.startY),(facetracker.face.startX+facetracker.face.width,facetracker.face.startY+facetracker.face.height),(255,0,0),2)
+    pts = cv2.boxPoints(facetracker.rethead)
     pts = np.int0(pts)
-    img2 = cv.polylines(frame, [pts], True, 255, 2)
+    frame = cv.polylines(frame, [pts], True, 255, 2)
+
+    pts = cv2.boxPoints(facetracker.retlefteye)
+    pts = np.int0(pts)
+    frame = cv.polylines(frame, [pts], True, 255, 2)
     cv2.imshow('preview', frame)
 
 
@@ -41,11 +45,10 @@ def perform_checks():
     else:
         image_controller.reset()
 
-
 while True:
     perform_tests()
     # code for checking head tilt(leftor right)
-    average = tiltdetector.update(facetracker.ret[2])
+    average = tiltdetector.update(facetracker.headangle)
     #
     # 
     perform_checks()

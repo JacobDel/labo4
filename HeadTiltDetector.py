@@ -14,8 +14,8 @@ class TiltDetector:
         self.cornerkeeper.append(corner)
 
     def LeftTilt(self):
-        if 60 > np.mean(self.cornerkeeper) > 20:
-            if not(np.mean(self.cornerkeeper[20:30]) < 20 or np.mean(self.cornerkeeper[20:30]) > 60):
+        if 60 > np.mean(self.cornerkeeper) > 15:
+            if not(np.mean(self.cornerkeeper[20:30]) < 15 or np.mean(self.cornerkeeper[20:30]) > 60):
                 return True
         return False
 
