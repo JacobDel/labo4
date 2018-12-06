@@ -39,9 +39,9 @@ def perform_tests():
     # print(str(facetracker.face.startX) + ", " + str(facetracker.face.startY) + ", " + str(facetracker.face.width) + ", " + str(facetracker.face.height))
     # cv2.rectangle(frame,(facetracker.face.startX,facetracker.face.startY),(facetracker.face.startX+facetracker.face.width,facetracker.face.startY+facetracker.face.height),(255,0,0),2)
 
-    pts = cv2.boxPoints(facetracker.rethead)
-    pts = np.int0(pts)
-    frame = cv.polylines(frame, [pts], True, 255, 2)
+    # pts = cv2.boxPoints(facetracker.rethead)
+    # pts = np.int0(pts)
+    # frame = cv.polylines(frame, [pts], True, 255, 2)
     # pts = cv2.boxPoints(facetracker.retlefteye)
     # pts = np.int0(pts)
     # frame = cv.polylines(frame, [pts], True, 255, 2)
@@ -49,6 +49,7 @@ def perform_tests():
     # pts = np.int0(pts)
     # frame = cv.polylines(frame, [pts], True, 255, 2)
     face = facetracker.face
+    frame = cv2.rectangle(frame, (face.startX, face.startY), (face.startX + face.width, face.startY + face.height), (255,0,0),2)
     # frame = cv2.rectangle(frame, (face.leftEyeX, face.leftEyeY), (face.eyeWidth + face.leftEyeX, face.eyeHeight + face.leftEyeY), (255,0,0),2)
     # frame = cv2.rectangle(frame, (face.rightEyeX, face.rightEyeY), (face.eyeWidth + face.rightEyeX, face.eyeHeight + face.rightEyeY), (255,0,0),2)
 

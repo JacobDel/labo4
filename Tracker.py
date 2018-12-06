@@ -122,16 +122,16 @@ class FaceTracking:
 
     def PerformFaceTracking(self):
         ret, frame = self.cap.read()
-        # self.check_viola_jones(frame)
-        self.foundeyes = False
-        self.foundhead = False
+        self.check_viola_jones(frame)
+        # self.foundeyes = False
+        # self.foundhead = False
 
 
         # https://docs.opencv.org/3.4/db/df8/tutorial_py_meanshift.html
         if not self.foundhead:
-            ret, track_window = self.CamshiftTracking(self.cam_head, frame)
-            self.headangle = ret[2]
-            self.rethead = ret
+            ret, track_window = self.MeanShiftTracking(self.cam_head, frame)
+            # self.headangle = ret[2]
+            # self.rethead = ret
             self.face.setHead(track_window[0], track_window[1], track_window[2], track_window[3])
         if not self.foundeyes:
             ret, track_window_left = self.MeanShiftTracking(self.cam_lefteye, frame)
