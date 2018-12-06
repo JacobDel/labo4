@@ -89,40 +89,24 @@ class FaceTracking:
                                    (face.eyeWidth, face.eyeHeight), 0)
                 self.face.setEyes(face.leftEyeX, face.leftEyeY, face.rightEyeX, face.rightEyeY, face.eyeWidth, face.eyeHeight)
 
-            # if face.startX is not None:
-            #     self.foundhead = True
-            #     self.face.setHead(face.startX, face.startY, face.width, face.height)
-            #     self.rethead = ((face.startX + face.width/2, face.startY + face.height/2), (face.width, face.height), 0)
-            #     self.cam_head.roi_setup(frame, face.startX, face.startY, face.width, face.height)
-
-    # def CamshiftTracking(self, frame, x, y, w, h):
-        # # setup initial location of window
-        # track_window = (y, x, w, h)
-        # # set up the ROI for tracking
-        # roi = frame[y:y + h, x:x + w]
-        # hsv_roi = cv.cvtColor(roi, cv.COLOR_BGR2HSV)
-        # mask = cv.inRange(hsv_roi, np.array((0., 60., 32.)), np.array((180., 255., 255.)))
-        # roi_hist = cv.calcHist([hsv_roi], [0], mask, [180], [0, 180])
-        # cv.normalize(roi_hist, roi_hist, 0, 255, cv.NORM_MINMAX)
-        # # Setup the termination criteria, either 10 iteration or move by atleast 1 pt
-        # term_crit = (cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 1)
-        #
-        # hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-        # dst = cv.calcBackProject([hsv], [0], roi_hist, [0, 180], 1)
-        # # apply meanshift to get the new location
-        # ret, track_window = cv.CamShift(dst, track_window, term_crit)
-        # # return track_window
-        # # self.face = Face(track_window[0], track_window[1], track_window[2], track_window[3])
-        # # self.ret = ret
-        # return ret, track_window
-
-    # TODO: de fout is:  er wordt een stuk uitgeknipt uit een foto en dan wordt dit stuk getracked op dezelfde foto
-    def CamshiftTracking(self, cam_tracker, frame):
+    def MeanShiftTracking(self, cam_tracker, frame):
         track_window = cam_tracker.track_window
         # set up the ROI for tracking
         roi_hist = cam_tracker.roi_hist
         term_crit = cam_tracker.term_crit
 
+        hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+        dst = cv.calcBackProject([hsv], [0], roi_hist, [0, 180], 1)
+        # apply meanshift to get the new location
+        ret, track_window = cv.meanShift(dst, track_window, term_crit)
+
+        return ret, track_window
+
+    def CamshiftTracking(self, cam_tracker, frame):
+        track_window = cam_tracker.track_window
+        # set up the ROI for tracking
+        roi_hist = cam_tracker.roi_hist
+        term_crit = cam_tracker.term_crit
 
         hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
         dst = cv.calcBackProject([hsv],[0],roi_hist,[0,180],1)
@@ -138,9 +122,9 @@ class FaceTracking:
 
     def PerformFaceTracking(self):
         ret, frame = self.cap.read()
-        self.check_viola_jones(frame)
-        # self.foundeyes = False
-        # self.foundhead = False
+        # self.check_viola_jones(frame)
+        self.foundeyes = False
+        self.foundhead = False
 
 
         # https://docs.opencv.org/3.4/db/df8/tutorial_py_meanshift.html
@@ -150,13 +134,13 @@ class FaceTracking:
             self.rethead = ret
             self.face.setHead(track_window[0], track_window[1], track_window[2], track_window[3])
         if not self.foundeyes:
-            ret, track_window_left = self.CamshiftTracking(self.cam_lefteye, frame)
-            self.lefteyeangle = ret[2]
-            self.retlefteye = ret
+            ret, track_window_left = self.MeanShiftTracking(self.cam_lefteye, frame)
+            # self.lefteyeangle = ret[2]
+            # self.retlefteye = ret
 
-            ret, track_window_right = self.CamshiftTracking(self.cam_righteye, frame)
-            self.righteyeangle = ret[2]
-            self.retrighteye = ret
+            ret, track_window_right = self.MeanShiftTracking(self.cam_righteye, frame)
+            # self.righteyeangle = ret[2]
+            # self.retrighteye = ret
 
             self.face.setEyes(track_window_left[0], track_window_left[1], track_window_right[0], track_window_right[1],
                               track_window_right[2],

@@ -25,3 +25,6 @@ class TiltDetector:
                 return True
         return False
 
+    def Getaverage(self):
+        return np.mean(self.cornerkeeper)
+
