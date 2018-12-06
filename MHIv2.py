@@ -44,6 +44,20 @@ def nextFrame(frame):
         # update motion history
         cv2.motempl.updateMotionHistory(fgmask, motion_history, timestamp, MHI_DURATION)
 
+        mg_mask, mg_orient = cv2.motempl.calcMotionGradient(motion_history, 4, 2, 5)
+
+        if (np.sum(mg_mask) > 2000):  # kleine detecties willen we niet
+            angle = cv2.motempl.calcGlobalOrientation(mg_orient, mg_mask, motion_history, timestamp, MHI_DURATION)
+            print("bewogen " + str(angle))
+            # if (angle < 280 and angle > 265):
+            #     print("naar boven")  # werkt goed
+            # elif (angle < 190 and angle > 160):
+            #     print("naar rechts")  # werkt goed
+            # elif (angle < 100 and angle > 80):
+            #     print("naar beneden")  # werkt maar soms
+            # elif (angle > 320 or angle < 10):
+            #     print("naar links")  # werkt goed
+
         # normalize motion history
         mh = np.uint8(np.clip((motion_history-(timestamp-MHI_DURATION))/MHI_DURATION,0,1)*255)
         # cv2.imshow('motempl', mh)
