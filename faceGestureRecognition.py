@@ -3,7 +3,7 @@ import cv2 as cv
 import sys
 from faceObject import Face
 
-cap = cv.VideoCapture(sys.argv[1])
+cap = cv.VideoCapture(0)
 
 # https://docs.opencv.org/3.4.3/d7/d8b/tutorial_py_face_detection.htmlq
 def getFaces(frame):

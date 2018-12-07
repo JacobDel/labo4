@@ -1,6 +1,8 @@
 import cv2
 from faceGestureRecognitionV2 import getFaces
 from Tracker import FaceTracking
+import Tracker
+import WinkRecognition
 import MHIv2
 
 
@@ -19,10 +21,15 @@ while rval:
     cv2.imshow("preview", frame)
     rval, frame = vc.read()
     if frameCount == 1:
-        faces,eyes = getFaces(frame)
+        faces = getFaces(frame)
     for face in faces:
         cv2.rectangle(frame,(face.startX,face.startY),(face.startX+face.width,face.startY+face.height),(255,0,0),2)
-    cv2.imshow("test",MHIv2.nextFrame(frame))
+    img1,img2=Tracker.GetEyes()
+    if img1:
+        MHIeye = MHIv2.nextFrame(img1)
+        cv2.imshow("test",MHIeye)
+        if WinkRecognition.getWinkRecognition(MHIeye):
+            print("knipoog")
 
 
     key = cv2.waitKey(20)
