@@ -71,16 +71,16 @@ def getFaces(frame):
 #     for face in faces:
 #         cv.rectangle(frame,(face.startX,face.startY),(face.startX+face.width,face.startY+face.height),(255,0,0),2)
 #         if face.leftEyeY:
-#             cv.rectangle(frame,(face.leftEyeX,face.leftEyeY),(face.leftEyeX+face.leftEyeWidth,face.leftEyeY+face.leftEyeHeight),(255,0,0),2)
+#             cv.rectangle(frame,(face.leftEyeX,face.leftEyeY),(face.leftEyeX+face.eyeWidth,face.leftEyeY+face.eyeHeight),(255,0,0),2)
 #             cv.rectangle(frame, (face.rightEyeX, face.rightEyeY),
-#                          (face.rightEyeX + face.leftEyeWidth, face.rightEyeY + face.leftEyeHeight), (255, 0, 0), 2)
+#                          (face.rightEyeX + face.eyeWidth, face.rightEyeY + face.eyeHeight), (255, 0, 0), 2)
 #         if face.smileY:
 #             cv.rectangle(frame, (face.smileX, face.smileY),
 #                          (face.smileX + face.smileWidth, face.smileY + face.smileHeight), (255, 0, 0), 2)
 #     cv.imshow('img', frame)
 #     if cv.waitKey(1) & 0xFF == ord('q'):
 #         break
-
-# When everything done, release the capture
+#
+# # When everything done, release the capture
 # cap.release()
-cv.destroyAllWindows()
+# cv.destroyAllWindows()
