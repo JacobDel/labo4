@@ -25,18 +25,6 @@ class FaceTracking:
 
     def __init__(self, i_cap):
         self.cap = i_cap
-        tracker = cv2.Tracker_create('MEDIANFLOW')
-
-        # Define an initial bounding box
-        bbox = (287, 23, 86, 320)
-
-        # Uncomment the line below to select a different bounding box
-        bbox = cv2.selectROI(frame, False)
-
-        # Initialize tracker with first frame and bounding box
-        ok = tracker.init(frame, bbox)
-
-        self.cap = i_cap
         while self.face is None:
             ret, frame = i_cap.read()
             faces = faceGestureRecognitionV2.getFaces(frame)
@@ -53,11 +41,11 @@ class FaceTracking:
                 if face.leftEyeX is not None and face.startX is not None:
                     self.face = face
                     self.tracker_head = cv2.TrackerCSRT_create()
-                    self.tracker_head = tracker.init(frame, (face.startX, face.startY, face.width, face.height))
+                    self.tracker_head.init(frame, (face.startX, face.startY, face.width, face.height))
                     self.tracker_eyeL = cv2.TrackerCSRT_create()
-                    self.tracker_eyeL = tracker.init(frame, (face.leftEyeX, face.leftEyeY, (face.width, face.height)))
+                    self.tracker_eyeL.init(frame, (face.leftEyeX, face.leftEyeY, (face.width, face.height)))
                     self.tracker_eyeR = cv2.TrackerCSRT_create()
-                    self.tracker_eyeR = tracker.init(frame, (face.rightEyeX, face.rightEyeY, (face.width, face.height)))
+                    self.tracker_eyeR.init(frame, (face.rightEyeX, face.rightEyeY, (face.width, face.height)))
                     cv.destroyAllWindows()
             cv.waitKey(1)
 
@@ -67,14 +55,12 @@ class FaceTracking:
             face = foundFaces[0]
             if face.startX is not None:
                 self.face.setHead(face.startX, face.startY, face.width, face.height)
-                # self.cam_head.roi_setup(frame, face.startX, face.startY, face.width, face.height)
-
+                self.tracker_head.init(frame, (face.startX, face.startY, face.width, face.height))
             if face.leftEyeX is not None and face.startX is not None:
                 self.face.setEyes(face.leftEyeX, face.leftEyeY, face.rightEyeX, face.rightEyeY, face.eyeWidth,
                                   face.eyeHeight)
-
-                # self.cam_lefteye.roi_setup(frame, face.leftEyeX, face.leftEyeY, face.eyeWidth, face.eyeHeight)
-
+                self.tracker_eyeR.init(frame, (face.rightEyeX, face.rightEyeY, (face.width, face.height)))
+                self.tracker_eyeL.init(frame, (face.leftEyeX, face.leftEyeY, (face.width, face.height)))
 
                 self.face.setEyes(face.leftEyeX, face.leftEyeY, face.rightEyeX, face.rightEyeY, face.eyeWidth,
                                   face.eyeHeight)
@@ -82,10 +68,10 @@ class FaceTracking:
     def Track(self, frame, tracker):
 
         # Update tracker
-        ok, bbox = tracker.update(frame)
+        return tracker.update(frame)
 
         # Draw bounding box
-        if ok:
+        # if ok:
         #     Tracking success
 
 
@@ -95,7 +81,6 @@ class FaceTracking:
         # else:
         #     Tracking failure
             # cv2.putText(frame, "Tracking failure detected", (100, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
-1
         # Display tracker type on frame
         # cv2.putText(frame, tracker_type + " Tracker", (100, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2);
 
@@ -114,8 +99,8 @@ class FaceTracking:
             self.check_timer = False
         else:
             # https://docs.opencv.org/3.4/db/df8/tutorial_py_meanshift.html
-            ret, track_window = self.MeanShiftTracking(self.cam_head, frame)
+            ok_head, track_window = self.tracker_head.update(frame)
             self.face.setHead(track_window[0], track_window[1], track_window[2], track_window[3])
-            ret, track_window_left = self.MeanShiftTracking(self.cam_lefteye, frame)
-            ret, track_window_right = self.MeanShiftTracking(self.cam_righteye, frame)
-            self.face.setEyes(track_window_left[0], track_window_left[1], track_window_right[0], track_window_right[1],track_window_right[2], track_window_right[3])
+            ok_Leye, track_window_left = self.tracker_eyeL(frame)
+            ok_Reye, track_window_right = self.tracker_eyeR(frame)
+            self.face.setEyes(track_window_left[0], track_window_left[1], track_window_right[0], track_window_right[1], track_window_right[2], track_window_right[3])
