@@ -44,13 +44,23 @@ def getFaces(frame):
 
         person.append(Face(int(x*xRatio), int(y*yRatio), int(h*yRatio), int(w*xRatio)))
 
-        if len(eyes) > 1:
-            person[0].rightEyeX = int((eyes[1][0]+x)*xRatio)
-            person[0].rightEyeY = int((eyes[1][1]+y)*yRatio)
+        if len(eyes) > 0:
             person[0].leftEyeX = int((eyes[0][0]+x)*xRatio)
             person[0].leftEyeY = int((eyes[0][1]+y)*yRatio)
             person[0].eyeWidth = int(eyes[0][2]*xRatio)
             person[0].eyeHeight = int(eyes[0][3]*yRatio)
+        if len(eyes) > 1:
+            person[0].rightEyeX = int((eyes[1][0]+x)*xRatio)
+            person[0].rightEyeY = int((eyes[1][1]+y)*yRatio)
+            # set left eye left & right eye right
+            if(person[0].rightEyeX<person[0].leftEyeX):
+                swapEyeX=person[0].leftEyeX
+                swapEyeY=person[0].leftEyeY
+                person[0].leftEyeX = person[0].rightEyeX
+                person[0].leftEyeY = person[0].rightEyeY
+                person[0].rightEyeX = swapEyeX
+                person[0].rightEyeY = swapEyeY
+
         if len(smiles)>0:
             person[0].smileX = int((smiles[0][0]+x)*xRatio)
             person[0].smileY = int((smiles[0][1]+y)*yRatio)

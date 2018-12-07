@@ -37,6 +37,7 @@ def nextFrame(frame):
         reset(frame)
         return frame
     else:
+        frame=cv2.resize(frame,(w,h))
         frame_diff = cv2.absdiff(frame, prev_frame)
         gray_diff = cv2.cvtColor(frame_diff, cv2.COLOR_BGR2GRAY)
         ret, fgmask = cv2.threshold(gray_diff,DEFAULT_THRESHOLD,1,cv2.THRESH_BINARY)
