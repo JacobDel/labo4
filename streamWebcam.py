@@ -16,6 +16,9 @@ else:
 
 frameCount = 0
 faces = None
+prevLeftEye = None
+prevRightEye = None
+leftEyeInitialised = False # The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
 while rval:
     frameCount = (frameCount+1) % 15 # should only detect faces every x amount of frames
     cv2.imshow("preview", frame)
@@ -24,12 +27,20 @@ while rval:
         faces = getFaces(frame)
     for face in faces:
         cv2.rectangle(frame,(face.startX,face.startY),(face.startX+face.width,face.startY+face.height),(255,0,0),2)
-    img1,img2=Tracker.GetEyes()
-    if img1:
-        MHIeye = MHIv2.nextFrame(img1)
-        cv2.imshow("test",MHIeye)
-        if WinkRecognition.getWinkRecognition(MHIeye):
-            print("knipoog")
+    # in faces get face[0]
+    # cut out the eye image
+    if len(faces)>0:
+        if(faces[0].leftEyeY and faces[0].rightEyeY): # unsupported operand type(s) for &: 'NoneType' and 'NoneType'
+            # eyes are found
+            prevLeftEye = frame[face.leftEyeY:face.leftEyeY+face.eyeHeight, face.leftEyeX:face.leftEyeX+face.eyeWidth]
+            leftEyeInitialised=True
+            # prevRightEye = frame[face.rightEyeY:face.rightEyeY + face.height, face.rightEyeX:face.rightEyeX + face.eyeWidth]
+        if leftEyeInitialised:
+            # also give the head to check if the head moved!
+            MHIeye = MHIv2.nextFrame(prevLeftEye)
+            cv2.imshow("test",MHIeye)
+            if WinkRecognition.getWinkRecognition(MHIeye):
+                print("knipoog")
 
 
     key = cv2.waitKey(20)
