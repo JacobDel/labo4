@@ -48,12 +48,6 @@ def nextFrame(frame):
 
         # normalize motion history
         mh = np.uint8(np.clip((motion_history-(timestamp-MHI_DURATION))/MHI_DURATION,0,1)*255)
-        # cv2.imshow('motempl', mh)
-        # cv2.imshow('raw', frame)
 
         prev_frame = frame.copy()
         return mh
-
-    # if 0xFF & cv2.waitKey(5) == 27:
-    #     break
-# cv2.destroyAllWindows()

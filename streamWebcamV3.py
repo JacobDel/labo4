@@ -29,6 +29,7 @@ timerSet = False
 face = None
 winkEyeX = None
 winkEyeY = None
+faceSample = None
 
 # setup
 
@@ -53,18 +54,25 @@ while rval:
             cv2.rectangle(frame, (face.rightEyeX, face.rightEyeY), (face.rightEyeX + face.eyeWidth, face.rightEyeY + face.eyeHeight),
                           (0, 100, 123), 2)
 
-        if (faces[0].leftEyeY and faces[0].rightEyeY):  # unsupported operand type(s) for &: 'NoneType' and 'NoneType'
+        if (faces[0].leftEyeY):  # unsupported operand type(s) for &: 'NoneType' and 'NoneType'
             # eyes are found
             prevLeftEye = frame[face.leftEyeY:face.leftEyeY + face.eyeHeight,
                           face.leftEyeX:face.leftEyeX + face.eyeWidth]
+            faceSample = frame[face.leftEyeY:face.leftEyeY + face.eyeHeight,
+                          face.leftEyeX+face.eyeWidth:face.leftEyeX + 2*face.eyeWidth]
             leftEyeInitialised = True
             # prevRightEye = frame[face.rightEyeY:face.rightEyeY + face.height, face.rightEyeX:face.rightEyeX + face.eyeWidth]
         if leftEyeInitialised:
             # also give the head to check if the head moved!
             MHIeye = MHIv2.nextFrame(prevLeftEye)
+            MHImoved = MHIv2.nextFrame(faceSample)
             cv2.imshow("a", MHIeye)
-            if WinkRecognition.getWinkRecognition(MHIeye):
-                print("knipoog")
+
+            if not WinkRecognition.getWinkRecognition(MHImoved):
+                if WinkRecognition.getWinkRecognition(MHIeye):
+                    print("knipoog")
+
+        print("-----")
         # # check if eyes exist
         # if face.leftEyeX is None:
         #     # search the eyes closest to our previous eye
