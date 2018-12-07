@@ -3,7 +3,7 @@
 import cv2 as cv
 import faceGestureRecognitionV2
 from CamShiftObject import CamShiftObject
-
+import threading
 
 class FaceTracking:
     face = None
@@ -29,6 +29,8 @@ class FaceTracking:
     rethead = None
     retlefteye = None
     retrighteye = None
+
+    check_timer = False
 
     def __init__(self, i_cap):
         self.cap = i_cap
@@ -61,6 +63,7 @@ class FaceTracking:
                                         (face.eyeWidth, face.eyeHeight), 0)
                     self.cam_righteye = CamShiftObject(frame, face.rightEyeX, face.rightEyeY, face.eyeWidth, face.eyeHeight)
 
+                    self.timer()
                     cv.destroyAllWindows()
             cv.waitKey(1)
 
@@ -71,7 +74,7 @@ class FaceTracking:
         if len(foundFaces) != 0:
             face = foundFaces[0]
             if face.startX is not None:
-                self.foundhead = True
+                # self.foundhead = True
                 self.face.setHead(face.startX, face.startY, face.width, face.height)
                 self.rethead = (
                 (face.startX + face.width / 2, face.startY + face.height / 2), (face.width, face.height), 0)
@@ -79,7 +82,7 @@ class FaceTracking:
 
             if face.leftEyeX is not None and face.startX is not None:
                 self.face.setEyes(face.leftEyeX, face.leftEyeY, face.rightEyeX, face.rightEyeY, face.eyeWidth, face.eyeHeight)
-                self.foundeyes = True
+                # self.foundeyes = True
 
                 self.retlefteye = ((face.leftEyeX + face.eyeWidth / 2, face.leftEyeY + face.eyeHeight / 2),
                                    (face.eyeWidth, face.eyeHeight), 0)
@@ -87,7 +90,6 @@ class FaceTracking:
 
                 self.retrighteye = ((face.rightEyeX + face.eyeWidth / 2, face.rightEyeY + face.eyeHeight / 2),
                                    (face.eyeWidth, face.eyeHeight), 0)
-                self.face.setEyes(face.leftEyeX, face.leftEyeY, face.rightEyeX, face.rightEyeY, face.eyeWidth, face.eyeHeight)
 
     def MeanShiftTracking(self, cam_tracker, frame):
         track_window = cam_tracker.track_window
@@ -102,6 +104,9 @@ class FaceTracking:
 
         return ret, track_window
 
+    # def InitOpenCVTracking(self, CV_tracker, frame):
+
+
     def CamshiftTracking(self, cam_tracker, frame):
         track_window = cam_tracker.track_window
         # set up the ROI for tracking
@@ -115,45 +120,41 @@ class FaceTracking:
 
         return ret, track_window
 
+    # def OpenCV_Tracking(self, cam_tracker, frame):
+
+
     def GetEyes(self):
         eye1 = self.cam_lefteye.roi
         eye2 = self.cam_righteye.roi
         return eye1, eye2
 
+    def timer(self):
+        self.check_timer = True
+        threading.Timer(1, self.timer).start()
+
     def PerformFaceTracking(self):
         ret, frame = self.cap.read()
-        self.check_viola_jones(frame)
+        if self.check_timer:
+            self.check_viola_jones(frame)
+            self.check_timer = False
         # self.foundeyes = False
         # self.foundhead = False
-
-
+        else:
         # https://docs.opencv.org/3.4/db/df8/tutorial_py_meanshift.html
-        if not self.foundhead:
-            ret, track_window = self.MeanShiftTracking(self.cam_head, frame)
-            # self.headangle = ret[2]
-            # self.rethead = ret
-            self.face.setHead(track_window[0], track_window[1], track_window[2], track_window[3])
-        if not self.foundeyes:
-            ret, track_window_left = self.MeanShiftTracking(self.cam_lefteye, frame)
-            # self.lefteyeangle = ret[2]
-            # self.retlefteye = ret
+            if not self.foundhead:
+                ret, track_window = self.MeanShiftTracking(self.cam_head, frame)
+                # self.headangle = ret[2]
+                # self.rethead = ret
+                self.face.setHead(track_window[0], track_window[1], track_window[2], track_window[3])
+            if not self.foundeyes:
+                ret, track_window_left = self.MeanShiftTracking(self.cam_lefteye, frame)
+                # self.lefteyeangle = ret[2]
+                # self.retlefteye = ret
 
-            ret, track_window_right = self.MeanShiftTracking(self.cam_righteye, frame)
-            # self.righteyeangle = ret[2]
-            # self.retrighteye = ret
+                ret, track_window_right = self.MeanShiftTracking(self.cam_righteye, frame)
+                # self.righteyeangle = ret[2]
+                # self.retrighteye = ret
 
-            self.face.setEyes(track_window_left[0], track_window_left[1], track_window_right[0], track_window_right[1],
-                              track_window_right[2],
-                              track_window_right[3])
-
-
-
-        # if not self.foundrighteye:
-            # ret, track_window = self.CamshiftTracking(self.cam_righteye, frame)
-            # ret, track_window = self.CamshiftTracking(frame,
-            #                                           self.face.rightEyeX,
-            #                                           self.face.rightEyeY,
-            #                                           self.face.rightEyeWidth,
-            #                                           self.face.rightEyeHeight)
-            # self.righteyeangle = ret[2]
-            # self.face.setRightEye(track_window[0], track_window[1], track_window[2], track_window[3])
+                self.face.setEyes(track_window_left[0], track_window_left[1], track_window_right[0], track_window_right[1],
+                                  track_window_right[2],
+                                  track_window_right[3])

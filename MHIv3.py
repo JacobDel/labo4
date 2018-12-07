@@ -26,6 +26,7 @@ def reset(frame):
     motion_history = np.zeros((h, w), np.float32)
     timestamp = 0
 
+
 def nextFrame(frame):
     if not reset:
         reset(frame)
@@ -46,9 +47,11 @@ def nextFrame(frame):
 
         mg_mask, mg_orient = cv2.motempl.calcMotionGradient(motion_history, 4, 2, 5)
 
-        if (np.sum(mg_mask) > 2000):  # kleine detecties willen we niet
-            angle = cv2.motempl.calcGlobalOrientation(mg_orient, mg_mask, motion_history, timestamp, MHI_DURATION)
-            print("bewogen " + str(angle))
+        print(str(cv2.motempl.calcGlobalOrientation(mg_orient, mg_mask, motion_history, timestamp, MHI_DURATION)))
+
+        # if (np.sum(mg_mask) > 2000):  # kleine detecties willen we niet
+        #     angle = cv2.motempl.calcGlobalOrientation(mg_orient, mg_mask, motion_history, timestamp, MHI_DURATION)
+            # print("bewogen " + str(angle))
             # if (angle < 280 and angle > 265):
             #     print("naar boven")  # werkt goed
             # elif (angle < 190 and angle > 160):
