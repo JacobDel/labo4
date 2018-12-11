@@ -19,6 +19,8 @@ class FaceTracker:
 
     check_timer = False
 
+    frame = None
+
     tracker_types = ['BOOSTING', 'MIL', 'KCF', 'TLD', 'MEDIANFLOW', 'GOTURN', 'MOSSE', 'CSRT']
     tracker_type = tracker_types[2]
 
@@ -53,39 +55,44 @@ class FaceTracker:
     def check_viola_jones(self, frame):
         foundfaces = faceGestureRecognitionV2.getFaces(frame)
         if len(foundfaces) != 0:
-            face = foundfaces[0]
-            if face.startX is not None:
-                self.face.setHead(face.startX, face.startY, face.width, face.height)
+            foundface = foundfaces[0]
+            if foundface.startX is not None:
+                self.face.setHead(foundface.startX, foundface.startY, foundface.width, foundface.height)
                 self.tracker_head = cv2.TrackerCSRT_create()
-                self.tracker_head.init(frame, (face.startX, face.startY, face.width, face.height))
-            if face.rightEyeX is not None:
-                self.face.setEyes(face.leftEyeX, face.leftEyeY, self.face.rightEyeX, self.face.rightEyeY, face.eyeWidth,
-                                  face.eyeHeight)
+                self.tracker_head.init(frame, (foundface.startX, foundface.startY, foundface.width, foundface.height))
+            if foundface.rightEyeX is not None:
+                self.face.setEyes(self.face.leftEyeX, self.face.leftEyeY, foundface.rightEyeX, foundface.rightEyeY, foundface.eyeWidth,
+                                  foundface.eyeHeight)
                 self.tracker_eyeR = cv2.TrackerCSRT_create()
-                self.tracker_eyeR.init(frame, (face.rightEyeX, face.rightEyeY, face.eyeWidth, face.eyeHeight))
-            if face.leftEyeX is not None:
-                self.face.setEyes(self.face.leftEyeX, self.face.leftEyeY, face.rightEyeX, face.rightEyeY, face.eyeWidth,
-                                  face.eyeHeight)
+                self.tracker_eyeR.init(frame, (foundface.rightEyeX, foundface.rightEyeY, foundface.eyeWidth, foundface.eyeHeight))
+            if foundface.leftEyeX is not None:
+                self.face.setEyes(foundface.leftEyeX, foundface.leftEyeY, self.face.rightEyeX, self.face.rightEyeY, foundface.eyeWidth,
+                                  foundface.eyeHeight)
                 self.tracker_eyeL = cv2.TrackerCSRT_create()
-                self.tracker_eyeL.init(frame, (face.leftEyeX, face.leftEyeY, face.eyeWidth, face.eyeHeight))
+                self.tracker_eyeL.init(frame, (foundface.leftEyeX, foundface.leftEyeY, foundface.eyeWidth, foundface.eyeHeight))
 
     def timer(self):
         self.check_timer = True
         threading.Timer(2, self.timer).start()
 
-    def PerformFaceTracking(self):
-        ret, frame = self.cap.read()
+    def getEyes(self):
+        face = self.face
+        return self.frame[face.leftEyeY: face.leftEyeY + face.eyeHeight, face.leftEyeX: face.leftEyeX + face.eyeWidth],\
+               self.frame[face.rightEyeY: face.rightEyeY + face.eyeHeight, face.rightEyeX: face.rightEyeX + face.eyeWidth]
+
+    def performFaceTracking(self):
+        ret, self.frame = self.cap.read()
         if self.check_timer:
-            self.check_viola_jones(frame)
+            self.check_viola_jones(self.frame)
             self.check_timer = False
         else:
             # https://docs.opencv.org/3.4/db/df8/tutorial_py_meanshift.html
-            ok_head, track_window = self.tracker_head.update(frame)
+            ok_head, track_window = self.tracker_head.update(self.frame)
             track_window = [int(i) for i in track_window]
             self.face.setHead(track_window[0], track_window[1], track_window[2], track_window[3])
-            ok_Leye, track_window_left = self.tracker_eyeL.update(frame)
+            ok_Leye, track_window_left = self.tracker_eyeL.update(self.frame)
             track_window_left = [int(i) for i in track_window_left]
-            ok_Reye, track_window_right = self.tracker_eyeR.update(frame)
+            ok_Reye, track_window_right = self.tracker_eyeR.update(self.frame)
             track_window_right = [int(i) for i in track_window_right]
             self.face.setEyes(track_window_left[0], track_window_left[1], track_window_right[0], track_window_right[1],
                               self.face.eyeWidth, self.face.eyeHeight)

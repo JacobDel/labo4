@@ -30,7 +30,7 @@ does stuff like tracking face, tracking eyes and such
 def perform_tests():
     ret, frame = vc.read()
     mhi_value = mhi.nextFrame(frame)
-    facetracker.PerformFaceTracking()
+    facetracker.performFaceTracking()
     # print(str(facetracker.face.startX) + ", " + str(facetracker.face.startY) + ", " + str(facetracker.face.width) + ", " + str(facetracker.face.height))
     # cv2.rectangle(frame,(facetracker.face.startX,facetracker.face.startY),(facetracker.face.startX+facetracker.face.width,facetracker.face.startY+facetracker.face.height),(255,0,0),2)
 
@@ -46,8 +46,10 @@ def perform_tests():
     face = facetracker.face
     frame = cv2.rectangle(frame, (face.startX, face.startY), (face.startX + face.width, face.startY + face.height), (255,0,0),2)
     frame = cv2.rectangle(frame, (face.leftEyeX, face.leftEyeY), (face.eyeWidth + face.leftEyeX, face.eyeHeight + face.leftEyeY), (255,0,0),2)
-    # frame = cv2.rectangle(frame, (face.rightEyeX, face.rightEyeY), (face.eyeWidth + face.rightEyeX, face.eyeHeight + face.rightEyeY), (255,0,0),2)
-
+    frame = cv2.rectangle(frame, (face.rightEyeX, face.rightEyeY), (face.eyeWidth + face.rightEyeX, face.eyeHeight + face.rightEyeY), (255,0,0),2)
+    eyeleft, eyeright = facetracker.getEyes()
+    cv2.imshow("lefteye", eyeleft)
+    cv2.imshow("righteye", eyeright)
     cv2.imshow('preview', frame)
 
 
