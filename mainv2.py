@@ -1,9 +1,7 @@
 import cv2
 import cv2 as cv
-import numpy as np
 from HeadTiltDetectorv2 import TiltDetector
-from HeadNodDetection import nodDetector
-from Tracker import FaceTracking
+from HeadNodDetectionv2 import nodDetector
 from ImageController import image_controller
 import MHIv3 as mhi
 from OpenCVTracker import FaceTracker
@@ -48,8 +46,8 @@ def perform_tests():
     frame = cv2.rectangle(frame, (face.leftEyeX, face.leftEyeY), (face.eyeWidth + face.leftEyeX, face.eyeHeight + face.leftEyeY), (255,0,0),2)
     frame = cv2.rectangle(frame, (face.rightEyeX, face.rightEyeY), (face.eyeWidth + face.rightEyeX, face.eyeHeight + face.rightEyeY), (255,0,0),2)
     eyeleft, eyeright = facetracker.getEyes()
-    cv2.imshow("lefteye", eyeleft)
-    cv2.imshow("righteye", eyeright)
+    # cv2.imshow("lefteye", eyeleft)
+    # cv2.imshow("righteye", eyeright)
     cv2.imshow('preview', frame)
 
 
@@ -67,13 +65,18 @@ def perform_checks():
     #     active = True
 
     # headnod checks
-    # horizontal, vertical = noddetector.checknods()
-    # if horizontal:
-    #     image_controller.resize_horizontal()
-    #     active = True
-    # elif vertical:
-    #     image_controller.resize_vertical()
-    #     active = True
+    horizontal, vertical = noddetector.getNods()
+    if horizontal:
+        image_controller.resize_horizontal()
+        active = True
+    elif vertical:
+        image_controller.resize_vertical()
+        active = True
+
+    if horizontal:
+        print("horizontal")
+    if vertical:
+        print("vertical")
 
     if not active:
         image_controller.reset()
