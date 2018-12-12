@@ -1,6 +1,8 @@
 import datetime
 
-
+"""
+tiltdetector is not used, it only worked with camshift
+"""
 class TiltDetector:
     meancalculated = False
     mean = None

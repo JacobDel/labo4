@@ -4,7 +4,7 @@ class nodDetector():
     y_keeper = None
 
     x_previous = None
-    y_previous  = None
+    y_previous = None
 
     def __init__(self):
         self.x_keeper = [self.size]
@@ -28,7 +28,7 @@ class nodDetector():
 
         if 5 < abs(x_current - self.x_previous) < 300:
             x_moved = abs(x_current - self.x_previous)
-        if 5 < abs(y_current -self.y_previous) < 300:
+        if 5 < abs(y_current - self.y_previous) < 300:
             y_moved = abs(y_current - self.y_previous)
         self.x_keeper.append(x_moved)
         self.y_keeper.append(y_moved)

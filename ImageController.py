@@ -1,5 +1,8 @@
 import cv2
 
+"""
+class used to control the image
+"""
 class image_controller:
     image = None
     image_original = None

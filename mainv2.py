@@ -27,27 +27,12 @@ does stuff like tracking face, tracking eyes and such
 """
 def perform_tests():
     ret, frame = vc.read()
-    mhi_value = mhi.nextFrame(frame)
     facetracker.performFaceTracking()
-    # print(str(facetracker.face.startX) + ", " + str(facetracker.face.startY) + ", " + str(facetracker.face.width) + ", " + str(facetracker.face.height))
-    # cv2.rectangle(frame,(facetracker.face.startX,facetracker.face.startY),(facetracker.face.startX+facetracker.face.width,facetracker.face.startY+facetracker.face.height),(255,0,0),2)
 
-    # pts = cv2.boxPoints(facetracker.rethead)
-    # pts = np.int0(pts)
-    # frame = cv.polylines(frame, [pts], True, 255, 2)
-    # pts = cv2.boxPoints(facetracker.retlefteye)
-    # pts = np.int0(pts)
-    # frame = cv.polylines(frame, [pts], True, 255, 2)
-    # pts = cv2.boxPoints(facetracker.retrighteye)
-    # pts = np.int0(pts)
-    # frame = cv.polylines(frame, [pts], True, 255, 2)
     face = facetracker.face
     frame = cv2.rectangle(frame, (face.startX, face.startY), (face.startX + face.width, face.startY + face.height), (255,0,0),2)
     frame = cv2.rectangle(frame, (face.leftEyeX, face.leftEyeY), (face.eyeWidth + face.leftEyeX, face.eyeHeight + face.leftEyeY), (255,0,0),2)
     frame = cv2.rectangle(frame, (face.rightEyeX, face.rightEyeY), (face.eyeWidth + face.rightEyeX, face.eyeHeight + face.rightEyeY), (255,0,0),2)
-    eyeleft, eyeright = facetracker.getEyes()
-    # cv2.imshow("lefteye", eyeleft)
-    # cv2.imshow("righteye", eyeright)
     cv2.imshow('preview', frame)
 
 
@@ -56,6 +41,7 @@ makes checks on the measured data
 """
 def perform_checks():
     active = False
+    # headtilt does not work with the OpenCV tracker
     #   headtilt checks
     # if tiltdetector.RightTilt():
     #     image_controller.rotate(1)
