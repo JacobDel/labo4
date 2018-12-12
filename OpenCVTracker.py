@@ -17,6 +17,7 @@ class FaceTracker:
     tracker_eyeL = None
     tracker_eyeR = None
 
+    eyedimension_keeper = []
     check_timer = False
 
     frame = None
