@@ -1,6 +1,4 @@
-import numpy as np
 import cv2 as cv
-import sys
 from faceObject import Face
 
 #based on viola jones
@@ -36,9 +34,7 @@ def getFaces(frame):
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
     person = []
     for (x, y, w, h) in faces:
-        # cv.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
         roi_gray = gray[y:y + h, x:x + w]
-        roi_color = frame[y:y + h, x:x + w]
         eyes = eye_cascade.detectMultiScale(roi_gray)
         smiles = smile_cascade.detectMultiScale(roi_gray)
 
@@ -66,9 +62,6 @@ def getFaces(frame):
             person[0].smileY = int((smiles[0][1]+y)*yRatio)
             person[0].smileWidth = int(smiles[0][2]*xRatio)
             person[0].smileHeight = int(smiles[0][3]*yRatio)
-            # for (ex, ey, ew, eh) in eyes:z
-            #     ey
-                # cv.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
     return person
 
 #TO TEST:
@@ -80,7 +73,7 @@ def getFaces(frame):
 #     faces = getFaces(frame)
 #     for face in faces:
 #         cv.rectangle(frame,(face.startX,face.startY),(face.startX+face.width,face.startY+face.height),(255,0,0),2)
-#         if face.leftEyeY:
+#         if face.leftEyeY is not None and face.rightEyeX is not None:
 #             cv.rectangle(frame,(face.leftEyeX,face.leftEyeY),(face.leftEyeX+face.eyeWidth,face.leftEyeY+face.eyeHeight),(255,0,0),2)
 #             cv.rectangle(frame, (face.rightEyeX, face.rightEyeY),
 #                          (face.rightEyeX + face.eyeWidth, face.rightEyeY + face.eyeHeight), (255, 0, 0), 2)
