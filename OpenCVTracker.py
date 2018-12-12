@@ -90,15 +90,9 @@ class FaceTracker:
                     self.tracker_eyeL = cv2.TrackerCSRT_create()
                     self.tracker_eyeL.init(frame, (foundface.leftEyeX, foundface.leftEyeY, width, height))
 
-            # if foundface.leftEyeX is not None:
-            #     self.face.setEyes(foundface.leftEyeX, foundface.leftEyeY, self.face.rightEyeX, self.face.rightEyeY, foundface.eyeWidth,
-            #                       foundface.eyeHeight)
-            #     self.tracker_eyeL = cv2.TrackerCSRT_create()
-            #     self.tracker_eyeL.init(frame, (foundface.leftEyeX, foundface.leftEyeY, foundface.eyeWidth, foundface.eyeHeight))
-
     def timer(self):
         self.check_timer = True
-        threading.Timer(2, self.timer).start()
+        threading.Timer(1, self.timer).start()
 
     def getEyes(self):
         face = self.face
