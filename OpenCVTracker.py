@@ -5,8 +5,6 @@ import cv2
 import cv2 as cv
 import faceGestureRecognitionV2
 import threading
-import numpy as np
-
 
 class FaceTracker:
     face = None
@@ -20,9 +18,6 @@ class FaceTracker:
     check_timer = False
 
     frame = None
-
-    tracker_types = ['BOOSTING', 'MIL', 'KCF', 'TLD', 'MEDIANFLOW', 'GOTURN', 'MOSSE', 'CSRT']
-    tracker_type = tracker_types[2]
 
     def __init__(self, i_cap):
         self.cap = i_cap
