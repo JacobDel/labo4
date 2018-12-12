@@ -13,8 +13,6 @@ class FaceTracker:
     face = None
     cap = None
 
-    eyedimension_keeper = []
-
     tracker_head = None
     tracker_eyeL = None
     tracker_eyeR = None
@@ -42,17 +40,16 @@ class FaceTracker:
                                  (255,0,0),2)
                 cv.imshow('looking for face', frame)
                 if face.leftEyeX is not None and face.startX is not None and face.rightEyeX is not None:
-                    if face.leftEyeX < face.rightEyeX:
-                        self.face = face
-                        self.tracker_head = cv2.TrackerCSRT_create()
-                        self.tracker_head.init(frame, (face.startX, face.startY, face.width, face.height))
-                        self.tracker_eyeL = cv2.TrackerCSRT_create()
-                        self.tracker_eyeL.init(frame, (face.leftEyeX, face.leftEyeY, face.eyeWidth, face.eyeHeight))
-                        self.tracker_eyeR = cv2.TrackerCSRT_create()
-                        self.tracker_eyeR.init(frame, (face.rightEyeX, face.rightEyeY, face.eyeWidth, face.eyeHeight))
-                        self.eyedimension_keeper.append((face.eyeWidth, face.eyeHeight))
-                        cv.destroyAllWindows()
-                        self.timer()
+                    self.face = face
+                    self.tracker_head = cv2.TrackerCSRT_create()
+                    self.tracker_head.init(frame, (face.startX, face.startY, face.width, face.height))
+                    self.tracker_eyeL = cv2.TrackerCSRT_create()
+                    self.tracker_eyeL.init(frame, (face.leftEyeX, face.leftEyeY, face.eyeWidth, face.eyeHeight))
+                    self.tracker_eyeR = cv2.TrackerCSRT_create()
+                    self.tracker_eyeR.init(frame, (face.rightEyeX, face.rightEyeY, face.eyeWidth, face.eyeHeight))
+                    cv.destroyAllWindows()
+
+                    self.timer()
             cv.waitKey(1)
 
     def check_viola_jones(self, frame):
