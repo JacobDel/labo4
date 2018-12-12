@@ -1,5 +1,4 @@
 import cv2
-import sys
 
 # object that uses camshift and/or viola jones to track face
 
@@ -72,7 +71,7 @@ class FaceTracker:
                 if height_difference_between_eyes > distance_between_eyes/2:
                     ok = False
                 if ok:
-                    if len(self.eyedimension_keeper) > 3:
+                    if len(self.eyedimension_keeper) > 6:
                         self.eyedimension_keeper.remove(self.eyedimension_keeper[0])
                     self.eyedimension_keeper.append((foundface.eyeWidth, foundface.eyeHeight))
                     width = 0
