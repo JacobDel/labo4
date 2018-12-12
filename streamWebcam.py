@@ -1,9 +1,7 @@
 import cv2
-from faceGestureRecognitionV2 import getFaces
-from Tracker import FaceTracking
-import Tracker
 import WinkRecognition
 import MHIv2
+from OpenCVTracker import FaceTracker
 
 
 cv2.namedWindow("preview")
@@ -18,31 +16,49 @@ frameCount = 0
 faces = None
 prevLeftEye = None
 prevRightEye = None
-leftEyeInitialised = False # The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+leftEyeInitialised = False
+counter = 0
+startTime = None
+timerResult = None
+timerSet = False
+face = None
+winkEyeX = None
+winkEyeY = None
+faceSample = None
+
+def scaleEye(eyeImage):
+    # NEEDED WHEN THE EYE IMAGE IS TOO LARGE
+    # eyeWidth = len(eyeImage[0])
+    # eyeHeight = len(eyeImage)
+    # return eyeImage[int(eyeWidth/8):int(7*eyeWidth/8),int(eyeHeight/8):int(7*eyeHeight/8)]
+    return eyeImage
+
+# setup
+faceTracker = FaceTracker(vc)
+while leftEyeInitialised is False:
+    faceTracker.performFaceTracking()
+    leftEye,rightEye=faceTracker.getEyes()
+    if (leftEye is not None and rightEye is not None):
+        MHIv2.nextFrame(scaleEye(leftEye))
+        leftEyeInitialised = True
+# loop
 while rval:
-    frameCount = (frameCount+1) % 15 # should only detect faces every x amount of frames
+    faceTracker.performFaceTracking()
+    # frameCount = (frameCount+1) % 15 # should only detect faces every x amount of frames, to receive a better framerate
     cv2.imshow("preview", frame)
     rval, frame = vc.read()
-    if frameCount == 1:
-        faces = getFaces(frame)
-    for face in faces:
-        cv2.rectangle(frame,(face.startX,face.startY),(face.startX+face.width,face.startY+face.height),(255,0,0),2)
-    # in faces get face[0]
-    # cut out the eye image
-    if len(faces)>0:
-        if(faces[0].leftEyeY and faces[0].rightEyeY): # unsupported operand type(s) for &: 'NoneType' and 'NoneType'
-            # eyes are found
-            prevLeftEye = frame[face.leftEyeY:face.leftEyeY+face.eyeHeight, face.leftEyeX:face.leftEyeX+face.eyeWidth]
-            leftEyeInitialised=True
-            # prevRightEye = frame[face.rightEyeY:face.rightEyeY + face.height, face.rightEyeX:face.rightEyeX + face.eyeWidth]
-        if leftEyeInitialised:
-            # also give the head to check if the head moved!
-            MHIeye = MHIv2.nextFrame(prevLeftEye)
-            cv2.imshow("test",MHIeye)
-            if WinkRecognition.getWinkRecognition(MHIeye):
-                print("knipoog")
-
-
+    wink = False
+    leftEye, rightEye = faceTracker.getEyes()
+    if (leftEye is not None and rightEye is not None):
+        MHIeye = MHIv2.nextFrame(scaleEye(leftEye))
+        cv2.imshow("a", MHIeye)
+        cv2.imshow("oog",scaleEye(leftEye))
+        if WinkRecognition.getWinkRecognition(MHIeye):
+            wink = True
+    if wink:
+        cv2.imshow("effect", frame)
+    else:
+        cv2.imshow("effect",cv2.resize(frame,(100,80)))
     key = cv2.waitKey(20)
     if key == 27: # exit on ESC
         break
