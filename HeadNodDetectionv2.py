@@ -51,18 +51,6 @@ class nodDetector():
         self.y_previous = y_current
         self.movementcalculated = False
 
-    # def checknods(self):
-    #     vertical = False
-    #     horizontal = False
-    #     if sum(self.x_keeper) > 400 and sum(self.y_keeper) < 300:
-    #         vertical = True
-    #     elif sum(self.y_keeper) > 300 and sum(self.x_keeper) < 200:
-    #         horizontal = True
-    #     return horizontal, vertical
-
-    # def get_values(self):
-        # return str(sum(self.x_keeper)), str(sum(self.y_keeper))
-
     def getTimeNow(self):
         return (datetime.datetime.now() - self.start_time).total_seconds()
 
