@@ -60,30 +60,41 @@ class FaceTracker:
                 self.face.setHead(foundface.startX, foundface.startY, foundface.width, foundface.height)
                 self.tracker_head = cv2.TrackerCSRT_create()
                 self.tracker_head.init(frame, (foundface.startX, foundface.startY, foundface.width, foundface.height))
-            if foundface.rightEyeX is not None:
-                self.face.setEyes(self.face.leftEyeX, self.face.leftEyeY, foundface.rightEyeX, foundface.rightEyeY, foundface.eyeWidth,
-                                  foundface.eyeHeight)
-                self.tracker_eyeR = cv2.TrackerCSRT_create()
-                self.tracker_eyeR.init(frame, (foundface.rightEyeX, foundface.rightEyeY, foundface.eyeWidth, foundface.eyeHeight))
-            if foundface.leftEyeX is not None:
-                self.face.setEyes(foundface.leftEyeX, foundface.leftEyeY, self.face.rightEyeX, self.face.rightEyeY, foundface.eyeWidth,
-                                  foundface.eyeHeight)
-                self.tracker_eyeL = cv2.TrackerCSRT_create()
-                self.tracker_eyeL.init(frame, (foundface.leftEyeX, foundface.leftEyeY, foundface.eyeWidth, foundface.eyeHeight))
+            if foundface.rightEyeX is not None and foundface.leftEyeX is not None:
+                ok = True
+                distance_between_eyes = foundface.rightEyeX - foundface.leftEyeX
+                if distance_between_eyes < foundface.eyeWidth:
+                    ok = False #checks that the distance between the eyes is bigger than the eyewidth
+                if foundface.leftEyeX > foundface.rightEyeX:
+                    ok = False  #checks that the left eye is to the left of the right eye
+                height_difference_between_eyes = abs(foundface.rightEyeY - foundface.leftEyeY)
+                if height_difference_between_eyes > distance_between_eyes/2:
+                    ok = False
+                if ok:
+                    if len(self.eyedimension_keeper) > 3:
+                        self.eyedimension_keeper.remove(self.eyedimension_keeper[0])
+                    self.eyedimension_keeper.append((foundface.eyeWidth, foundface.eyeHeight))
+                    width = 0
+                    height = 0
+                    for i in self.eyedimension_keeper:
+                        width = width + i[0]
+                        height = height + i[1]
+                    width = int(round(width/len(self.eyedimension_keeper)))
+                    height = int(round(height/len(self.eyedimension_keeper)))
+                    self.face.setEyes(foundface.leftEyeX, foundface.leftEyeY, foundface.rightEyeX, foundface.rightEyeY, width, height)
+                    self.tracker_eyeR = cv2.TrackerCSRT_create()
+                    self.tracker_eyeR.init(frame, (foundface.rightEyeX, foundface.rightEyeY, width, height))
+                    self.tracker_eyeL = cv2.TrackerCSRT_create()
+                    self.tracker_eyeL.init(frame, (foundface.leftEyeX, foundface.leftEyeY, width, height))
 
     def timer(self):
         self.check_timer = True
-        threading.Timer(2, self.timer).start()
+        threading.Timer(1, self.timer).start()
 
     def getEyes(self):
         face = self.face
-        # if face.leftEyeY is not None and face.rightEyeX is not None and self.frame is not None:
-        if face.leftEyeX<face.rightEyeX:
-            return self.frame[face.leftEyeY: face.leftEyeY + face.eyeHeight, face.leftEyeX: face.leftEyeX + face.eyeWidth],\
-                   self.frame[face.rightEyeY: face.rightEyeY + face.eyeHeight, face.rightEyeX: face.rightEyeX + face.eyeWidth]
-        else:
-            return self.frame[face.rightEyeY: face.rightEyeY + face.eyeHeight, face.rightEyeX: face.rightEyeX + face.eyeWidth],\
-                   self.frame[face.leftEyeY: face.leftEyeY + face.eyeHeight, face.leftEyeX: face.leftEyeX + face.eyeWidth]
+        return self.frame[face.leftEyeY: face.leftEyeY + face.eyeHeight, face.leftEyeX: face.leftEyeX + face.eyeWidth],\
+               self.frame[face.rightEyeY: face.rightEyeY + face.eyeHeight, face.rightEyeX: face.rightEyeX + face.eyeWidth]
 
     def performFaceTracking(self):
         ret, self.frame = self.cap.read()
