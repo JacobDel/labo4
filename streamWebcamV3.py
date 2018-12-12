@@ -32,6 +32,12 @@ winkEyeX = None
 winkEyeY = None
 faceSample = None
 
+def scaleEye(eyeImage):
+    # eyeWidth = len(eyeImage[0])
+    # eyeHeight = len(eyeImage)
+    # return eyeImage[int(eyeWidth/8):int(7*eyeWidth/8),int(eyeHeight/8):int(7*eyeHeight/8)]
+    return eyeImage
+
 # setup
 faceTracker = FaceTracker(vc)
 while leftEyeInitialised is False:
@@ -45,7 +51,7 @@ while leftEyeInitialised is False:
         #               face.leftEyeX+face.eyeWidth:face.leftEyeX + 2*face.eyeWidth]
         # prevLeftEye = eyes[0]
         # prevLeftEye = leftEye
-        MHIv2.nextFrame(leftEye)
+        MHIv2.nextFrame(scaleEye(leftEye))
         leftEyeInitialised = True
 
 
@@ -77,10 +83,10 @@ while rval:
     wink = False
     leftEye, rightEye = faceTracker.getEyes()
     if (leftEye is not None and rightEye is not None):
-        MHIeye = MHIv2.nextFrame(leftEye)
+        MHIeye = MHIv2.nextFrame(scaleEye(leftEye))
         # MHImoved = MHIv2.nextFrame(faceSample)
         cv2.imshow("a", MHIeye)
-        cv2.imshow("oog",leftEye)
+        cv2.imshow("oog",scaleEye(leftEye))
 
         # if not WinkRecognition.getWinkRecognition(MHImoved):
         if WinkRecognition.getWinkRecognition(MHIeye):
