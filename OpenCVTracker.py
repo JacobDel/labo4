@@ -81,7 +81,10 @@ class FaceTracker:
                         height = height + i[1]
                     width = int(round(width/len(self.eyedimension_keeper)))
                     height = int(round(height/len(self.eyedimension_keeper)))
-                    self.face.setEyes(foundface.leftEyeX, foundface.leftEyeY, foundface.rightEyeX, foundface.rightEyeY, width, height)
+
+                    leftEyeCenter = (foundface.leftEyeX + foundface.eyeWidth/2, foundface.leftEyeY + foundface.eyeHeight/2)
+                    rightEyeCenter = (foundface.rightEyeX + foundface.eyeWidth/2, foundface.rightEyeY + foundface.eyeHeight/2)
+                    self.face.setEyes(int(round(leftEyeCenter[0] - width/2)),int(round( leftEyeCenter[1] - height/2)), int(round(rightEyeCenter[0] - width/2)), int(round(rightEyeCenter[1] - height/2)), width, height)
                     self.tracker_eyeR = cv2.TrackerCSRT_create()
                     self.tracker_eyeR.init(frame, (foundface.rightEyeX, foundface.rightEyeY, width, height))
                     self.tracker_eyeL = cv2.TrackerCSRT_create()
