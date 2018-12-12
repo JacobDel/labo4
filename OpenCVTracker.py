@@ -77,8 +77,13 @@ class FaceTracker:
 
     def getEyes(self):
         face = self.face
-        return self.frame[face.leftEyeY: face.leftEyeY + face.eyeHeight, face.leftEyeX: face.leftEyeX + face.eyeWidth],\
-               self.frame[face.rightEyeY: face.rightEyeY + face.eyeHeight, face.rightEyeX: face.rightEyeX + face.eyeWidth]
+        # if face.leftEyeY is not None and face.rightEyeX is not None and self.frame is not None:
+        if face.leftEyeX<face.rightEyeX:
+            return self.frame[face.leftEyeY: face.leftEyeY + face.eyeHeight, face.leftEyeX: face.leftEyeX + face.eyeWidth],\
+                   self.frame[face.rightEyeY: face.rightEyeY + face.eyeHeight, face.rightEyeX: face.rightEyeX + face.eyeWidth]
+        else:
+            return self.frame[face.rightEyeY: face.rightEyeY + face.eyeHeight, face.rightEyeX: face.rightEyeX + face.eyeWidth],\
+                   self.frame[face.leftEyeY: face.leftEyeY + face.eyeHeight, face.leftEyeX: face.leftEyeX + face.eyeWidth]
 
     def performFaceTracking(self):
         ret, self.frame = self.cap.read()

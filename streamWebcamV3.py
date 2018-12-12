@@ -2,10 +2,11 @@ import cv2
 from faceGestureRecognitionV2 import getFaces
 import time
 import sys
-from Tracker import FaceTracking
+# from Tracker import FaceTracking
 import Tracker
 import WinkRecognition
 import MHIv2
+from OpenCVTracker import FaceTracker
 
 
 cv2.namedWindow("preview")
@@ -32,51 +33,63 @@ winkEyeY = None
 faceSample = None
 
 # setup
-
+faceTracker = FaceTracker(vc)
+while leftEyeInitialised is False:
+    faceTracker.performFaceTracking()
+    leftEye,rightEye=faceTracker.getEyes()
+    if (leftEye is not None and rightEye is not None):  # unsupported operand type(s) for &: 'NoneType' and 'NoneType'
+        # eyes are found
+        # prevLeftEye = frame[face.leftEyeY:face.leftEyeY + face.eyeHeight,
+        #               face.leftEyeX:face.leftEyeX + face.eyeWidth]
+        # faceSample = frame[face.leftEyeY:face.leftEyeY + face.eyeHeight,
+        #               face.leftEyeX+face.eyeWidth:face.leftEyeX + 2*face.eyeWidth]
+        # prevLeftEye = eyes[0]
+        # prevLeftEye = leftEye
+        MHIv2.nextFrame(leftEye)
+        leftEyeInitialised = True
 
 
 
 # loop
 while rval:
-
+    faceTracker.performFaceTracking()
     # frameCount = (frameCount+1) % 15 # should only detect faces every x amount of frames
     cv2.imshow("preview", frame)
     rval, frame = vc.read()
     # if frameCount == 1:
-    faces = getFaces(frame)
-    if len(faces) is 1:
-        face = faces[0]
-        cv2.rectangle(frame,(face.startX,face.startY),(face.startX+face.width,face.startY+face.height),(255,150,0),2)
-        if face.leftEyeX:
-            cv2.rectangle(frame, (face.leftEyeX, face.leftEyeY), (face.leftEyeX + face.eyeWidth, face.leftEyeY + face.eyeHeight),
-                          (255, 0, 123), 2)
-        if face.rightEyeX:
-            cv2.rectangle(frame, (face.rightEyeX, face.rightEyeY), (face.rightEyeX + face.eyeWidth, face.rightEyeY + face.eyeHeight),
-                          (0, 100, 123), 2)
+    # faces = getFaces(frame)
 
-        if (faces[0].leftEyeY):  # unsupported operand type(s) for &: 'NoneType' and 'NoneType'
-            # eyes are found
-            prevLeftEye = frame[face.leftEyeY:face.leftEyeY + face.eyeHeight,
-                          face.leftEyeX:face.leftEyeX + face.eyeWidth]
-            faceSample = frame[face.leftEyeY:face.leftEyeY + face.eyeHeight,
-                          face.leftEyeX+face.eyeWidth:face.leftEyeX + 2*face.eyeWidth]
-            leftEyeInitialised = True
-            # prevRightEye = frame[face.rightEyeY:face.rightEyeY + face.height, face.rightEyeX:face.rightEyeX + face.eyeWidth]
-        if leftEyeInitialised:
-            # also give the head to check if the head moved!
-            MHIeye = MHIv2.nextFrame(prevLeftEye)
-            MHImoved = MHIv2.nextFrame(faceSample)
-            cv2.imshow("a", MHIeye)
 
-            if not WinkRecognition.getWinkRecognition(MHImoved):
-                if WinkRecognition.getWinkRecognition(MHIeye):
-                    print("knipoog")
+    # if len(faces) is 1:
+    #     face = faces[0]
+    #     cv2.rectangle(frame,(face.startX,face.startY),(face.startX+face.width,face.startY+face.height),(255,150,0),2)
+    #     if face.leftEyeX:
+    #         cv2.rectangle(frame, (face.leftEyeX, face.leftEyeY), (face.leftEyeX + face.eyeWidth, face.leftEyeY + face.eyeHeight),
+    #                       (255, 0, 123), 2)
+    #     if face.rightEyeX:
+    #         cv2.rectangle(frame, (face.rightEyeX, face.rightEyeY), (face.rightEyeX + face.eyeWidth, face.rightEyeY + face.eyeHeight),
+    #                       (0, 100, 123), 2)
 
-        print("-----")
-        # # check if eyes exist
-        # if face.leftEyeX is None:
-        #     # search the eyes closest to our previous eye
-        #     # start timer
+
+        # prevRightEye = frame[face.rightEyeY:face.rightEyeY + face.height, face.rightEyeX:face.rightEyeX + face.eyeWidth]
+    # if leftEyeInitialised:
+        # also give the head to check if the head moved!
+    leftEye, rightEye = faceTracker.getEyes()
+    if (leftEye is not None and rightEye is not None):
+        MHIeye = MHIv2.nextFrame(leftEye)
+        # MHImoved = MHIv2.nextFrame(faceSample)
+        cv2.imshow("a", MHIeye)
+        cv2.imshow("oog",leftEye)
+
+        # if not WinkRecognition.getWinkRecognition(MHImoved):
+        if WinkRecognition.getWinkRecognition(MHIeye):
+            print("knipoog")
+
+    print("-----")
+    # # check if eyes exist
+    # if face.leftEyeX is None:
+    #     # search the eyes closest to our previous eye
+    #     # start timer
 
 
 
