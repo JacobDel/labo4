@@ -1,7 +1,7 @@
 import numpy as np
 
 overshoot = 0.01
-maxOvershoot = 0.4
+maxOvershoot = 0.3
 
 # eyesframeMHIs = MHI picture of the eyes
 def getWinkRecognition(eyesFrameMHI):

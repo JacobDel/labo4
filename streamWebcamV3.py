@@ -74,6 +74,7 @@ while rval:
         # prevRightEye = frame[face.rightEyeY:face.rightEyeY + face.height, face.rightEyeX:face.rightEyeX + face.eyeWidth]
     # if leftEyeInitialised:
         # also give the head to check if the head moved!
+    wink = False
     leftEye, rightEye = faceTracker.getEyes()
     if (leftEye is not None and rightEye is not None):
         MHIeye = MHIv2.nextFrame(leftEye)
@@ -83,9 +84,12 @@ while rval:
 
         # if not WinkRecognition.getWinkRecognition(MHImoved):
         if WinkRecognition.getWinkRecognition(MHIeye):
-            print("knipoog")
+            wink = True
 
-    print("-----")
+    if wink:
+        cv2.imshow("effect", frame)
+    else:
+        cv2.imshow("effect",cv2.resize(frame,(100,80)))
     # # check if eyes exist
     # if face.leftEyeX is None:
     #     # search the eyes closest to our previous eye
