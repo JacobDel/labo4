@@ -3,7 +3,6 @@ import cv2 as cv
 from HeadTiltDetectorv2 import TiltDetector
 from HeadNodDetectionv2 import nodDetector
 from ImageController import image_controller
-import MHIv3 as mhi
 from OpenCVTracker import FaceTracker
 
 cv2.namedWindow("preview")
@@ -15,9 +14,7 @@ facetracker = FaceTracker(vc)
 cv2.destroyWindow("preview")
 tiltdetector = TiltDetector()
 noddetector = nodDetector()
-mhi.reset(vc.read()[1])
 cv.waitKey(2)
-mhi.nextFrame(vc.read()[1])
 
 # any image can be passed along to be displayed
 image_controller = image_controller(vc.read()[1])
