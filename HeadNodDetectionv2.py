@@ -1,4 +1,5 @@
 import datetime
+
 class nodDetector():
     movementcalculated = False
     mean = None
@@ -41,10 +42,10 @@ class nodDetector():
         x_moved = 0
         y_moved = 0
 
-        if 20 < abs(x_current - self.x_previous) < 300:
-            x_moved = abs(x_current - self.x_previous)
-        if 20 < abs(y_current - self.y_previous) < 300:
-            y_moved = abs(y_current - self.y_previous)
+        if 0.05 < abs((x_current - self.x_previous)/faceObject.width) < 1:
+            x_moved = abs((x_current-self.x_previous)/faceObject.width)
+        if 0.05 < abs((y_current - self.y_previous)/faceObject.width) < 1:
+            y_moved = abs((y_current - self.y_previous)/faceObject.width)
         self.x_keeper.append((self.getTimeNow(), x_moved))
         self.y_keeper.append((self.getTimeNow(), y_moved))
         self.x_previous = x_current
@@ -64,13 +65,12 @@ class nodDetector():
             for i in self.y_keeper:
                 y = y + i[1]
             self.y_total = y
-
             self.movementcalculated = True
 
         yes = False
         no = False
-        if self.y_total > 100 and self.y_total > self.x_total:
+        if self.y_total > 1 and self.y_total > self.x_total:
             yes = True
-        elif self.x_total > 100 and self.x_total > self.y_total:
+        elif self.x_total > 2 and self.x_total > self.y_total:
             no = True
         return no, yes
